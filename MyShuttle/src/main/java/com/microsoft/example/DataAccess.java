@@ -22,9 +22,9 @@ public class DataAccess
 {
 	// Some database-specific details we'll need
 	private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-	private static final String DB_URL = "jdbc:mysql://db:3306/MyShuttleDb";
-	private static final String DB_USER = "user";
-	private static final String DB_PASS = "password";
+	private static final String DB_URL = "jdbc:mysql://35.209.100.48:3306/myshuttle?useSSL=false&serverTimezone=UTC";
+        private static final String DB_USER = "root";
+        private static final String DB_PASS = "Muneer@788";
 	
 	private static Connection theConnection;
 	static {
