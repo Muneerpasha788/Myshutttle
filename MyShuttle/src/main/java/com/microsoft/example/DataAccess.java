@@ -1,4 +1,9 @@
 package com.microsoft.example;
+package com.contoso.myshuttle;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,15 +15,16 @@ import com.microsoft.example.models.*;
  * DatabaseAccess handles MySQL connections for the MyShuttle application.
  */
 public class DataAccess {
-    // MySQL Connection Details
-    private static final String DB_URL = "jdbc:mysql://35.209.100.48:3306/myshuttle?useSSL=false&serverTimezone=UTC";
+    // Updated database name to 'alm'
+    private static final String DB_URL = "jdbc:mysql://35.209.100.48:3306/alm?useSSL=false&serverTimezone=UTC";
     private static final String DB_USER = "root";
     private static final String DB_PASS = "Muneer@788";
 
-    // Use try-with-resources for better exception handling
-    private static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
     }
+}
+
 
     /**
      * Simple check to see if login succeeds, without returning the Employee model.
