@@ -1,104 +1,66 @@
 package com.microsoft.example;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.sql.*;
 import com.microsoft.example.models.*;
 
+/**
+ * DatabaseAccess handles MySQL connections for the MyShuttle application.
+ */
 public class DataAccess {
-    private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+    // MySQL Connection Details
     private static final String DB_URL = "jdbc:mysql://35.209.100.48:3306/myshuttle?useSSL=false&serverTimezone=UTC";
     private static final String DB_USER = "root";
     private static final String DB_PASS = "Muneer@788";
 
-    private static Connection theConnection;
-    
-    private static PreparedStatement LOGIN;
-    private static PreparedStatement REGISTER;
-    private static PreparedStatement FARES;
-    private static PreparedStatement GETTOTAL;
-
-    static {
-        try {
-            // Bootstrap driver
-            Class.forName(DB_DRIVER);
-
-            String conStr = System.getenv("MYSQLCONNSTR_MyShuttleDb");
-            if (conStr == null || conStr.trim().length() == 0) {
-                theConnection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-            } else {
-                theConnection = DriverManager.getConnection(conStr);
-            }
-
-            // Prepare SQL statements
-            LOGIN = theConnection.prepareStatement("SELECT * FROM users WHERE email=? AND password=?");
-            REGISTER = theConnection.prepareStatement("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-            FARES = theConnection.prepareStatement("SELECT * FROM fares WHERE emp_id=?");
-            GETTOTAL = theConnection.prepareStatement("SELECT SUM(fare_charge) AS totalfare, SUM(driver_fee) AS totaldriverfee FROM fares WHERE emp_id=?");
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ExceptionInInitializerError(ex.toString());
-        }
+    // Use try-with-resources for better exception handling
+    private static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
     }
 
     /**
-     * User registration method
+     * Simple check to see if login succeeds, without returning the Employee model.
      */
-    public static boolean registerUser(String username, String email, String password) {
-        try {
-            REGISTER.clearParameters();
-            REGISTER.setString(1, username);
-            REGISTER.setString(2, email);
-            REGISTER.setString(3, password);  // TODO: Store hashed password in production
-            
-            int rowsInserted = REGISTER.executeUpdate();
-            return rowsInserted > 0;
-        } catch (SQLException sqlEx) {
-            sqlEx.printStackTrace();
-            return false;
-        }
+    public static boolean loginSuccessful(String employeeEmail, String employeePassword) {
+        return (login(employeeEmail, employeePassword) != null);
     }
 
     /**
-     * Simple check to see if login succeeds, without returning the User model
+     * Retrieve an employee by username/email and password
      */
-    public static boolean loginSuccessful(String email, String password) {
-        return (login(email, password) != null);
-    }
+    public static Employee login(String employeeEmail, String employeePassword) {
+        String query = "SELECT * FROM employees WHERE username=? AND password=?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-    /**
-     * Retrieve user by email and password
-     */
-    public static User login(String email, String password) {
-        try {
-            LOGIN.clearParameters();
-            LOGIN.setString(1, email);
-            LOGIN.setString(2, password);
-            
-            try (ResultSet rs = LOGIN.executeQuery()) {
+            stmt.setString(1, employeeEmail);
+            stmt.setString(2, employeePassword);
+
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
+                    return new Employee(rs.getInt("id"), rs.getString("username"), rs.getString("password"));
                 }
-                return null;
             }
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
-            return null;
         }
+        return null;
     }
 
     /**
      * Return all the fares for a given Employee's ID #
-     */    
+     */
     public static List<Fare> employeeFares(int empID) {
-        try {
-            FARES.clearParameters();
-            FARES.setInt(1, empID);
-            
-            try (ResultSet rs = FARES.executeQuery()) {
-                List<Fare> results = new ArrayList<>(20);
+        String query = "SELECT * FROM fares WHERE emp_id=?";
+        List<Fare> results = new ArrayList<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, empID);
+            try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     results.add(new Fare(rs.getInt("id"), rs.getInt("emp_id"),
                         rs.getString("pickup"), rs.getString("dropoff"),
@@ -106,11 +68,50 @@ public class DataAccess {
                         rs.getInt("fare_charge"), rs.getInt("driver_fee"),
                         rs.getInt("passenger_rating"), rs.getInt("driver_rating")));
                 }
-                return results;
             }
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
-            return Collections.emptyList();
         }
+        return results;
+    }
+
+    /**
+     * Return total fare for an employee
+     */
+    public static float getFareTotal(int empID) {
+        String query = "SELECT SUM(fare_charge) as totalfare FROM fares WHERE emp_id=?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, empID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("totalfare") / 100.0f;
+                }
+            }
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+        }
+        return -1;
+    }
+
+    /**
+     * Return total driver fee for an employee
+     */
+    public static float getTotalDriverFee(int empID) {
+        String query = "SELECT SUM(driver_fee) as totaldriverfee FROM fares WHERE emp_id=?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, empID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("totaldriverfee") / 100.0f;
+                }
+            }
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+        }
+        return -1;
     }
 }
