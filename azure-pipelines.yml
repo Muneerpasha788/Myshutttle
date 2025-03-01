@@ -12,7 +12,7 @@ steps:
   displayName: 'Run a multi-line script'
 - task: Maven@4
   inputs:
-    mavenPomFile: 'pom.xml'
+    mavenPomFile: 'MyShuttle/pom.xml'
     goals: 'clean package'
     options: '-Dmaven.test.skip=true'
     publishJUnitResults: true
