@@ -7,13 +7,22 @@
    <display-name>servlet</display-name>
    <servlet-name>servlet</servlet-name>
    <servlet-class>com.microsoft.example.servlet.Servlet</servlet-class>
- </servlet>
+  </servlet>
   <servlet>
    <display-name>loginServlet</display-name>
    <servlet-name>loginServlet</servlet-name>
    <servlet-class>com.microsoft.example.servlet.LoginServlet</servlet-class>
- </servlet>
- 
+  </servlet>
+  <servlet>
+    <servlet-name>RegisterServlet</servlet-name>
+    <servlet-class>com.microsoft.example.RegisterServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>RegisterServlet</servlet-name>
+    <url-pattern>/RegisterServlet</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>servlet</servlet-name>
     <url-pattern>/hello</url-pattern>
