@@ -21,20 +21,24 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("email");
         String password = request.getParameter("password");
         Employee employee = DataAccess.login(username, password);
+        
         if (employee != null) {
             session.setAttribute("employee", employee);
             
-            // Fetch all the fares for that employee while we're here
-            List<Fare> fareList = DataAccess.employeeFares(employee);
+            // Fetch all the fares for that employee
+            List<Fare> fareList = DataAccess.employeeFares(employee.getID());
             session.setAttribute("employeeList", fareList);
             
-            float totalFareforDriver = DataAccess.getFareTotal(employee.getID());
+            // Correct usage of getID()
+            int employeeId = employee.getID();
+
+            float totalFareforDriver = DataAccess.getFareTotal(employeeId);
             session.setAttribute("fareTotal", totalFareforDriver);
             
-            float totalDriverFee = DataAccess.getTotalDriverFee(employee.getID());
-            session.setAttribute("driverFeeTotal", totalFareforDriver);
+            float totalDriverFee = DataAccess.getTotalDriverFee(employeeId);
+            session.setAttribute("driverFeeTotal", totalDriverFee);
 
-            List<Route> routes = new ArrayList<Route>(fareList.size());
+            List<Route> routes = new ArrayList<>(fareList.size());
             for (Fare fare : fareList) {
                 routes.add(new Route(fare.getPickup(), fare.getDropoff()));
             }
@@ -48,4 +52,3 @@ public class LoginServlet extends HttpServlet {
         }
     }
 }
-
