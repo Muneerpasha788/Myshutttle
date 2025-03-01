@@ -16,7 +16,7 @@ import com.microsoft.example.models.*;
  */
 public class DataAccess {
     // Updated database name to 'alm'
-    private static final String DB_URL = "jdbc:mysql://35.209.100.48:3306/alm?useSSL=false&serverTimezone=UTC";
+    private static final String DB_URL = "jdbc:mysql://35.209.100.48:3306/myshuttledb?useSSL=false&serverTimezone=UTC";
     private static final String DB_USER = "root";
     private static final String DB_PASS = "Muneer@788";
 
