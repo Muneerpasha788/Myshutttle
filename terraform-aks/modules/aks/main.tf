@@ -14,4 +14,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
   identity {
     type = "SystemAssigned"
   }
+network_profile {
+    network_plugin = "azure"
+    service_cidr   = "10.1.0.0/16"  # Change to avoid conflict
+    dns_service_ip = "10.1.0.10"    # Ensure it falls within the service_cidr
+  }
 }
