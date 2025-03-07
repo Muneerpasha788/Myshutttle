@@ -30,4 +30,10 @@ steps:
     command: 'plan'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-aks'
     environmentServiceNameAzureRM: 'Free Trial(6996530b-3210-4e6d-81ef-9a47f5bec1c3)'
-
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-aks'''
+    commandOptions: '-auto-approve'
+    environmentServiceNameAzureRM: 'Free Trial(6996530b-3210-4e6d-81ef-9a47f5bec1c3)'
