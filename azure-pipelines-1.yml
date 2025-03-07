@@ -28,5 +28,6 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-aks'
     environmentServiceNameAzureRM: 'Free Trial(6996530b-3210-4e6d-81ef-9a47f5bec1c3)'
 
