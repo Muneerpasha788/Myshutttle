@@ -1,0 +1,32 @@
+
+trigger:
+- main
+
+pool:
+  name: 'default'
+  demands:
+    - Agent.Name -equals Muneer
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)terraform-aks'
+    backendServiceArm: 'Free Trial(6996530b-3210-4e6d-81ef-9a47f5bec1c3)'
+    backendAzureRmResourceGroupName: 'terraform-backend-rg'
+    backendAzureRmStorageAccountName: 'terraformbackendsa11'
+    backendAzureRmContainerName: 'akstfstate'
+    backendAzureRmKey: 'terraform.tfstate'
+
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    environmentServiceNameAzureRM: 'Free Trial(6996530b-3210-4e6d-81ef-9a47f5bec1c3)'
+
