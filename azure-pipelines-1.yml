@@ -12,7 +12,7 @@ steps:
   displayName: 'Run a one-line script'
 - task: TerraformInstaller@1
   inputs:
-    terraformVersion: 'latest'
+    terraformVersion: '1.6.6'
 - task: TerraformTaskV4@4
   inputs:
     provider: 'azurerm'
