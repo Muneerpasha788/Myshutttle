@@ -34,6 +34,6 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-aks'''
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-aks'
     commandOptions: '-auto-approve'
     environmentServiceNameAzureRM: 'Free Trial(6996530b-3210-4e6d-81ef-9a47f5bec1c3)'
