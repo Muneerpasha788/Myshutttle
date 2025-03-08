@@ -24,7 +24,7 @@ steps:
     containerRegistry: 'ACR'
     repository: 'mycontainerregistry788'
     command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile.yml'
+    Dockerfile: 'Dockerfile.yml'
 - task: CopyFiles@2
   inputs:
     SourceFolder: 'manifests'
