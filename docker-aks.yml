@@ -7,13 +7,27 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
-
+  name: default
+  demands:
+    - Agent.Name -equals Muneer
+variables:
+  acrName: 'mycontainerregistry788'
+  imageName: 'apache-server'
+  tag: 'latest'
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'ACR'
+    command: 'login'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'ACR'
+    repository: 'mycontainerregistry788'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile.yml'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
