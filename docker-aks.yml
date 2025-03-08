@@ -25,6 +25,11 @@ steps:
     repository: 'mycontainerregistry788'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile.yml'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'manifests'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
