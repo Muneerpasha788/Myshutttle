@@ -25,6 +25,7 @@ steps:
     repository: '$(acrName)/$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'Dockerfile'
+    tags: '$(Build.BuildId)'
 - task: CopyFiles@2
   inputs:
     SourceFolder: 'manifests'
