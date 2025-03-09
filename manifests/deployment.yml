@@ -2,10 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: apache-server
-  labels:
-    app: apache-server
 spec:
-  replicas: 2  # Number of pods
+  replicas: 2
   selector:
     matchLabels:
       app: apache-server
@@ -15,7 +13,8 @@ spec:
         app: apache-server
     spec:
       containers:
-      - name: apache-server
-        image: mycontainerregistry788.azurecr.io/apache-server:472012  # Update with your ACR URL
-        ports:
-        - containerPort: 80
+        - name: apache-server
+          image: mycontainerregistry788.azurecr.io/apache-server:472012  # Correct image tag
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: acr-secret  # Ensure you have a valid ACR authentication secret
