@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: apache-server
-        image: mycontainerregistry788.azurecr.io/apache-server:TAG  # Update with your ACR URL
+        image: mycontainerregistry788.azurecr.io/apache-server:472012  # Update with your ACR URL
         ports:
         - containerPort: 80
