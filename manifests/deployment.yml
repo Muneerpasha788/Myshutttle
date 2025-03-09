@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: apache-server
-          image: mycontainerregistry788.azurecr.io/apache-server:472012  # Correct image tag
+          image: mycontainerregistry788.azurecr.io/mycontainerregistry788/apache-server:472012
           imagePullPolicy: Always
       imagePullSecrets:
         - name: acr-secret  # Ensure you have a valid ACR authentication secret
